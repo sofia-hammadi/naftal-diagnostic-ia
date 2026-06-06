@@ -1,0 +1,14 @@
+# Modèle lourd — stocké sur Google Drive, pas sur GitHub
+best_model.pt
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.env
+venv/
+.venv/
+
+# OS
+.DS_Store
+Thumbs.db
