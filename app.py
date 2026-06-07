@@ -54,7 +54,7 @@ def telecharger_modele_si_absent():
             import gdown
             url = f"https://drive.google.com/uc?id={GDRIVE_MODEL_ID}"
             st.info("📥 Téléchargement du modèle depuis Google Drive...")
-            gdown.download(url, MODEL_PATH, quiet=False)
+            gdown.download(url, MODEL_PATH, quiet=False, fuzzy=True)
         except Exception as e:
             st.error(f"❌ Impossible de télécharger le modèle : {e}")
             st.stop()
