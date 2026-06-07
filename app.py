@@ -30,10 +30,6 @@ warnings.filterwarnings('ignore')
 # ─────────────────────────────────────────────────────────────────────────────
 # 1. CONFIGURATION
 # ─────────────────────────────────────────────────────────────────────────────
-
-# ─────────────────────────────────────────────────────────────────────────────
-# 1. CONFIGURATION + TÉLÉCHARGEMENT MODÈLE DEPUIS GOOGLE DRIVE
-# ─────────────────────────────────────────────────────────────────────────────
 BASE_PATH       = '.'
 MODEL_PATH      = os.path.join(BASE_PATH, 'best_model.pt')
 LABEL_MAPS_PATH = os.path.join(BASE_PATH, 'label_maps .json')
@@ -44,24 +40,29 @@ HISTORIQUE_PATH = os.path.join(CSV_DIR, 'historique_pannes.csv')
 LOGO_PATH       = "logo_naftal.png"
 COMPTES_PATH    = "comptes.json"
 
-# ── Téléchargement automatique du modèle depuis Google Drive ──────────────────
-GDRIVE_MODEL_ID = "1n0By94tN8RtXMEO8OcDbS4JAILurG5ob"
+# ── Téléchargement automatique du modèle depuis Hugging Face ─────────────────
+HF_REPO_ID = "hammadi-sofia2004/Camembert-naftal"
 
-@st.cache_resource(show_spinner="⏳ Téléchargement du modèle IA (première fois seulement)...")
+@st.cache_resource(show_spinner="⏳ Chargement du modèle IA...")
 def telecharger_modele_si_absent():
     if not os.path.exists(MODEL_PATH):
         try:
-            import gdown
-            url = f"https://drive.google.com/uc?id={GDRIVE_MODEL_ID}"
-            st.info("📥 Téléchargement du modèle depuis Google Drive...")
-            gdown.download(url, MODEL_PATH, quiet=False, fuzzy=True)
+            from huggingface_hub import hf_hub_download
+            hf_token = st.secrets.get("HF_TOKEN", None)
+            chemin = hf_hub_download(
+                repo_id=HF_REPO_ID,
+                filename="best_model.pt",
+                token=hf_token,
+                local_dir="."
+            )
+            st.success("✅ Modèle chargé avec succès !")
         except Exception as e:
             st.error(f"❌ Impossible de télécharger le modèle : {e}")
             st.stop()
+    return True
 
 telecharger_modele_si_absent()
 # ─────────────────────────────────────────────────────────────────────────────
-
 
 COULEURS_GRAVITE  = {'Critique':'#C0392B','Modérée':'#E8A838','Mineure':'#27AE60'}
 COULEURS_PRIORITE = {'Urgente':'#C0392B','Moyenne':'#E8A838','Basse':'#27AE60'}
